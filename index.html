@@ -15,6 +15,7 @@
             --card-bg: rgba(255, 255, 255, 0.9); 
             --text-dark: #2d3436; --text-gray: #636e72;
             --success: #2ecc71; --danger: #e74c3c;
+            --discord: #5865F2; --whatsapp: #25D366;
             --radius: 12px; --shadow: 0 4px 20px rgba(0,0,0,0.3);
         }
 
@@ -57,7 +58,12 @@
         .btn-acc { background: var(--success); color: white; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer; font-size: 12px; }
         .btn-reject { background: var(--danger); color: white; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer; font-size: 12px; }
 
-        .btn-main { width: 100%; padding: 12px; background: var(--accent); border: none; border-radius: 8px; color: var(--primary); font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px rgba(255, 204, 0, 0.3); }
+        .btn-main { width: 100%; padding: 12px; background: var(--accent); border: none; border-radius: 8px; color: var(--primary); font-weight: bold; cursor: pointer; box-shadow: 0 4px 10px rgba(255, 204, 0, 0.3); margin-bottom: 10px; }
+        .btn-social { display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; padding: 12px; border-radius: 8px; font-weight: bold; color: white; margin-bottom: 10px; transition: 0.3s; }
+        .btn-social.discord { background: var(--discord); }
+        .btn-social.whatsapp { background: var(--whatsapp); }
+        .btn-social:hover { opacity: 0.8; transform: scale(1.02); }
+
         textarea, input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; margin-bottom: 10px; box-sizing: border-box; font-family: inherit; background: rgba(255,255,255,0.8); }
         .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; }
         
@@ -129,6 +135,17 @@
             <h1 style="color: var(--accent); margin: 0;">NOCTIVE ROLEPLAY</h1>
             <p style="color: white; margin-top: 5px;">WELCOME TO SERVER NOCTIVE ROLEPLAY</p>
         </div>
+
+        <div class="card">
+            <h3>KOMUNITAS RESMI</h3>
+            <a href="https://discord.gg/ePe8gR6Tjj" target="_blank" class="btn-social discord">
+                <i class="fab fa-discord"></i> JOIN DISCORD SERVER
+            </a>
+            <a href="https://whatsapp.com/channel/0029Vb6qG875Ejy4KC4HZJ3a" target="_blank" class="btn-social whatsapp">
+                <i class="fab fa-whatsapp"></i> JOIN KOMUNITAS WA
+            </a>
+        </div>
+
         <div class="card">
             <h3>CHAT WARGA</h3>
             <div class="chat-container" id="chat-box"></div>
@@ -177,7 +194,10 @@
     <div id="page-donate-page" class="page">
         <div class="card">
             <h2 style="text-align: center; color: var(--primary);">DONATE</h2>
-            <div class="donate-item"><i class="fas fa-wallet"></i><div><b>DANA/OVO</b><br>0848-7094-8217</div></div>
+            <div class="donate-item" style="display: flex; align-items: center; gap: 15px; padding: 15px; background: rgba(249, 249, 249, 0.9); border-radius: 10px; margin-bottom: 10px; border: 1px solid #eee;">
+                <i class="fas fa-wallet" style="font-size: 24px; color: var(--primary);"></i>
+                <div><b>DANA/OVO</b><br>0848-7094-8217</div>
+            </div>
             <button class="btn-main" onclick="window.open('https://wa.me/6283870948217')">KONFIRMASI WA</button>
         </div>
     </div>
@@ -290,7 +310,6 @@
         toggleMenu();
     }
 
-    // --- CHAT SYSTEM LOGIC ---
     function sendChat() {
         const msg = document.getElementById('chat-input').value;
         if(!msg) return;
@@ -359,17 +378,14 @@
         if(!currentUser) return;
         const u = db.users[currentUser.email];
         
-        // Home Data
         document.getElementById('home-pengumuman').innerText = db.content.pengumuman;
         document.getElementById('home-event').innerText = db.content.event;
         document.getElementById('home-staff').innerText = db.content.staff;
 
-        // Render Chat
         const chatBox = document.getElementById('chat-box');
         chatBox.innerHTML = db.chats.map(c => `<div class="chat-bubble"><b>${c.name}</b><p>${c.text}</p></div>`).join('');
         chatBox.scrollTop = chatBox.scrollHeight;
 
-       // WL Status & Messenger
         if(u.wl !== 'NONE') {
             document.getElementById('wl-form').style.display = 'none';
             document.getElementById('wl-status').style.display = 'block';
@@ -387,7 +403,6 @@
             document.getElementById('cs-auto-name').innerText = u.ic_name;
         }
 
-        // CS Status & Messenger
         if(u.cs !== 'NONE') {
             document.getElementById('cs-form').style.display = 'none';
             document.getElementById('cs-status').style.display = 'block';
