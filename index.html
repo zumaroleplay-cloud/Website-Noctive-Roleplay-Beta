@@ -166,8 +166,8 @@
 
     window.saveDB = function() {
         set(ref(database, 'server_data'), window.db)
-        .then(() => { alert("Data Terkirim!"); })
-        .catch(e => { alert("Gagal: Izin ditolak Firebase. Cek Rules!"); console.error(e); });
+        .then(() => { alert("Berhasil Terkirim!"); })
+        .catch(e => { alert("Gagal Kirim! Pastikan kamu sudah klik 'Publish' di Rules Firebase."); console.error(e); });
     };
 
     window.handleCredentialResponse = function(response) {
@@ -185,7 +185,8 @@
     window.submitWL = function() {
         const n = document.getElementById('wl-name').value;
         const r = document.getElementById('wl-reason').value;
-        if(!n.includes('_')) return alert("Format: Nama_Lengkap");
+        if(!n || !r) return alert("Isi semua data!");
+        if(!n.includes('_')) return alert("Gunakan underscore! (Contoh: Nama_Lengkap)");
         const key = currentUser.email.replace(/\./g, ',');
         window.db.users[key].ic_name = n;
         window.db.users[key].wl = 'PROSES';
@@ -195,7 +196,7 @@
 
     window.submitCS = function() {
         const t = document.getElementById('cs-text').value;
-        if(t.length < 50) return alert("Cerita terlalu pendek!");
+        if(t.length < 50) return alert("Cerita minimal 50 karakter!");
         const key = currentUser.email.replace(/\./g, ',');
         window.db.users[key].cs = 'PROSES';
         window.db.users[key].cs_text = t;
@@ -214,7 +215,7 @@
     };
 
     window.adminAction = function(key, type, action) {
-        const msg = action === 'ACC' ? "Diterima oleh Staff" : prompt("Alasan:");
+        const msg = action === 'ACC' ? "Diterima oleh Staff" : prompt("Alasan Penolakan:");
         if(type === 'wl') {
             window.db.users[key].wl = action === 'ACC' ? 'SUKSES' : 'DITOLAK';
             window.db.users[key].wl_msg = msg;
@@ -228,10 +229,11 @@
     window.updateHome = function() {
         window.db.content.pengumuman = document.getElementById('edit-pengumuman').value;
         window.saveDB();
+        alert("Home Updated!");
     };
 
     window.loginAdminWithPIN = function() {
-        if(prompt("Staff PIN:") === "panjulganteng") { isAdmin = true; document.getElementById('admin-menu').style.display='block'; updateUI(); }
+        if(prompt("Staff PIN:") === "panjulganteng") { isAdmin = true; document.getElementById('admin-menu').style.display='block'; updateUI(); alert("Admin Mode On"); }
     };
 
     window.logout = function() { localStorage.clear(); location.reload(); };
@@ -272,7 +274,7 @@
         if(u && u.cs !== 'NONE') {
             document.getElementById('cs-form').style.display = 'none';
             document.getElementById('cs-status').style.display = 'block';
-            document.getElementById('cs-status-text').innerText = "CS Status: " + u.cs;
+            document.getElementById('cs-status-text').innerText = "Status CS: " + u.cs;
             document.getElementById('cs-msg-box').innerText = u.cs_msg || "Menunggu Staff...";
         }
 
@@ -288,11 +290,11 @@
         }
     }
 
-    // Animasi Galaxy
     const cvs = document.getElementById('galaxy-bg'); const cx = cvs.getContext('2d'); let sts = [];
     function init() { cvs.width = window.innerWidth; cvs.height = window.innerHeight; sts = []; for(let i=0; i<80; i++) sts.push({x:Math.random()*cvs.width, y:Math.random()*cvs.height, r:Math.random()*1.2}); }
     function anim() { cx.clearRect(0,0,cvs.width,cvs.height); cx.fillStyle = "white"; sts.forEach(s => { cx.beginPath(); cx.arc(s.x, s.y, s.r, 0, Math.PI*2); cx.fill(); s.y -= 0.2; if(s.y < 0) s.y = cvs.height; }); requestAnimationFrame(anim); }
     init(); anim();
+    window.addEventListener('resize', init);
 </script>
 </body>
 </html>
