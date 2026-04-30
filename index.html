@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NOCTIVE ROLEPLAY | Official Website</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <style>
+        :root {
+            --primary: #0056b3; --accent: #ffcc00; --danger: #e74c3c;
+            --card-bg: rgba(255, 255, 255, 0.95); --radius: 12px;
+            --discord: #7289da; --whatsapp: #25d366;
+        }
+        #galaxy-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: radial-gradient(circle at bottom, #001d3d 0%, #000814 100%); }
+        body { margin: 0; padding: 0; font-family: 'Poppins', sans-serif; color: #2d3436; overflow-x: hidden; min-height: 100vh; }
+        header { background: rgba(0, 86, 179, 0.9); padding: 10px 20px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 15px rgba(0,0,0,0.5); }
+        .logo-text { font-family: 'Montserrat'; color: var(--accent); font-weight: bold; font-size: 18px; }
+        .menu-btn { cursor: pointer; display: flex; flex-direction: column; gap: 5px; }
+        .menu-btn span { display: block; width: 22px; height: 3px; background: var(--accent); }
+        .user-profile img { width: 35px; height: 35px; border-radius: 50%; border: 2px solid var(--accent); }
+        nav { position: fixed; top: 0; left: -280px; width: 260px; height: 100%; background: white; transition: 0.4s; z-index: 2001; box-shadow: 5px 0 25px rgba(0,0,0,0.1); overflow-y: auto; }
+        nav.open { left: 0; }
+        .nav-header { padding: 30px; background: var(--accent); color: var(--primary); text-align: center; }
+        nav button { width: 100%; background: transparent; border: none; padding: 15px 25px; text-align: left; cursor: pointer; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; gap: 10px; }
+        .container { width: 100%; max-width: 800px; margin: 20px auto; padding: 0 15px; box-sizing: border-box; }
+        .page { display: none; }
+        .page.active { display: block; }
+        .card { background: var(--card-bg); border-radius: var(--radius); padding: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); margin-bottom: 20px; border-top: 4px solid var(--accent); }
+        .btn-main { width: 100%; padding: 12px; background: var(--accent); border: none; border-radius: 8px; color: var(--primary); font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .btn-main:active { transform: scale(0.98); }
+        textarea, input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; margin-bottom: 10px; box-sizing: border-box; font-family: inherit; }
+        
+        .social-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+        .btn-soc { padding: 12px; border-radius: 8px; color: white; text-decoration: none; text-align: center; font-weight: bold; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-discord { background: var(--discord); }
+        .btn-whatsapp { background: var(--whatsapp); }
+        .ip-box { background: #eee; padding: 15px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; margin-top: 10px; border: 2px dashed #bbb; }
+        .ip-text { font-family: monospace; font-weight: bold; color: var(--primary); }
+
+        .chat-container { height: 250px; overflow-y: auto; background: #f8f9fa; border-radius: 8px; padding: 10px; border: 1px solid #ddd; margin-bottom: 10px; display: flex; flex-direction: column; gap: 8px; }
+        .chat-bubble { background: white; padding: 8px 12px; border-radius: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); max-width: 85%; }
+        .admin-card { background: #fff; padding: 15px; border-radius: 10px; margin-bottom: 10px; border-left: 5px solid var(--primary); display: flex; justify-content: space-between; align-items: center; }
+        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; }
+        #cs-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 3000; align-items: center; justify-content: center; padding: 20px; }
+        .modal-content { background: white; padding: 25px; border-radius: 12px; width: 100%; max-width: 600px; max-height: 80vh; overflow-y: auto; }
+        
+        .admin-list-item { padding: 5px 0; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 10px; }
+        .badge-event { background: var(--danger); color: white; padding: 2px 8px; border-radius: 4px; font-size: 12px; margin-bottom: 10px; display: inline-block; }
+    </style>
+</head>
+<body>
+
+<canvas id="galaxy-bg"></canvas>
+
+<div id="login-overlay" style="position:fixed; top:0; left:0; width:100%; height:100%; background:#000814; z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align: center; padding: 20px;">
+    <h1 style="color:var(--accent); font-family:Montserrat;">NOCTIVE RP</h1>
+    <p id="login-msg" style="color:white; margin-bottom:20px;">Silahkan Login untuk masuk ke Website</p>
+    <div id="g_id_onload" data-client_id="94819907264-i5n030757j60pmjqg9ogk50f41pbokqe.apps.googleusercontent.com" data-callback="handleCredentialResponse"></div>
+    <div class="g_id_signin" data-type="standard"></div>
+</div>
+
+<header>
+    <div class="menu-btn" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+    <div class="logo-text">NOCTIVE ROLEPLAY</div>
+    <div style="display:flex; align-items:center;">
+        <span id="header-ic-name" style="color:var(--accent); font-weight:bold; margin-right:10px;"></span>
+        <div class="user-profile"><img id="user-photo" src="" alt=""></div>
+    </div>
+</header>
+
+<div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+
+<nav id="sidebar">
+    <div class="nav-header"><h3>NOCTIVE RP</h3><p id="player-ic-display">Citizen</p></div>
+    <button onclick="showPage('home')"><i class="fas fa-home"></i> HOME</button>
+    <button onclick="showPage('wl-page')" id="nav-wl-btn"><i class="fas fa-id-card"></i> WHITELIST</button>
+    <button onclick="showPage('cs-page')"><i class="fas fa-book"></i> CHAR STORY</button>
+    <button onclick="showPage('donate-page')"><i class="fas fa-hand-holding-usd"></i> DONATE</button>
+    <div id="admin-menu" style="display:none;">
+        <div style="padding:10px; font-size:11px; background:#eee; font-weight:bold;">STAFF AREA</div>
+        <button onclick="showPage('adm-wl')">Manage WL</button>
+        <button onclick="showPage('adm-cs')">Manage CS</button>
+        <button onclick="showPage('adm-content')">Update Konten Server</button>
+    </div>
+    <button onclick="loginAdminWithPIN()" style="color:red;"><i class="fas fa-user-shield"></i> STAFF LOGIN</button>
+    <button onclick="logout()"><i class="fas fa-sign-out-alt"></i> KELUAR</button>
+</nav>
+
+<div id="cs-modal">
+    <div class="modal-content">
+        <h3 id="modal-ic-name"></h3><hr>
+        <div id="modal-cs-text" style="white-space: pre-wrap; margin: 20px 0;"></div>
+        <button class="btn-main" onclick="closeModal()">TUTUP</button>
+    </div>
+</div>
+
+<div class="container">
+    <div id="page-home" class="page active">
+        <div class="card" style="border-top-color: var(--primary);">
+            <h3>SERVER ADDRESS</h3>
+            <div class="ip-box">
+                <span class="ip-text" id="server-ip-display">Loading...</span>
+                <button onclick="copyIP()" style="background:var(--primary); color:white; border:none; padding:5px 10px; border-radius:5px; cursor:pointer;">
+                    <i class="fas fa-copy"></i> SALIN
+                </button>
+            </div>
+            <div class="social-grid">
+                <a href="https://discord.gg/PSqeRUuUzn" target="_blank" class="btn-soc btn-discord"><i class="fab fa-discord"></i> DISCORD</a>
+                <a href="https://whatsapp.com/channel/0029Vb6qG875Ejy4KC4HZJ3a" target="_blank" class="btn-soc btn-whatsapp"><i class="fab fa-whatsapp"></i> WHATSAPP</a>
+            </div>
+        </div>
+        <div class="card">
+            <h3><i class="fas fa-bullhorn"></i> PENGUMUMAN</h3>
+            <p id="home-pengumuman"></p>
+            <hr>
+            <span class="badge-event"><i class="fas fa-star"></i> EVENT TERBARU</span>
+            <p id="home-event"></p>
+        </div>
+        <div class="card">
+            <h3><i class="fas fa-user-shield"></i> DAFTAR ADMIN</h3>
+            <div id="admin-display-list" style="display: grid; grid-template-columns: 1fr 1fr; gap: 5px;"></div>
+        </div>
+        <div class="card">
+            <h3>CHAT WARGA</h3>
+            <div class="chat-container" id="chat-box"></div>
+            <div style="display:flex; gap:10px;">
+                <input type="text" id="chat-input" placeholder="Ketik pesan...">
+                <button class="btn-main" onclick="sendChat()" style="width:80px;">KIRIM</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="page-wl-page" class="page">
+        <div class="card">
+            <h2>WHITELIST</h2>
+            <div id="wl-form">
+                <input type="text" id="wl-name" placeholder="Nama_Lengkap">
+                <textarea id="wl-reason" placeholder="Alasan..."></textarea>
+                <button class="btn-main" onclick="submitWL()">KIRIM</button>
+            </div>
+            <div id="wl-status" style="display:none; text-align:center;">
+                <h3 id="wl-status-text"></h3>
+                <p id="wl-msg-box"></p>
+                <button id="btn-wl-retry" class="btn-main" onclick="retryWL()" style="display:none; background:red; color:white;">ULANGI</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="page-cs-page" class="page">
+        <div class="card">
+            <h2>CHARACTER STORY</h2>
+            <div id="cs-form" style="display:none;">
+                <p>Karakter: <b id="cs-auto-name"></b></p>
+                <textarea id="cs-text" rows="8" placeholder="Tulis cerita..."></textarea>
+                <button class="btn-main" onclick="submitCS()">SUBMIT CS</button>
+            </div>
+            <div id="cs-lock" style="text-align:center;"><h3 style="color:red;">TERKUNCI</h3><p>Selesaikan Whitelist dahulu.</p></div>
+            <div id="cs-status" style="display:none; text-align:center;">
+                <h3 id="cs-status-text"></h3><p id="cs-msg-box"></p>
+            </div>
+        </div>
+    </div>
+
+    <div id="page-donate-page" class="page">
+        <div class="card" style="text-align:center;">
+            <h2>DONATE</h2><p>DANA/OVO: <b>0838-7094-8217</b></p>
+            <button class="btn-main" onclick="window.open('https://wa.me/6283870948217')">KONFIRMASI OWNER</button>
+        </div>
+    </div>
+
+    <div id="page-adm-wl" class="page"><div class="card"><h2>PENDING WL</h2><div id="adm-wl-list"></div></div></div>
+    <div id="page-adm-cs" class="page"><div class="card"><h2>PENDING CS</h2><div id="adm-cs-list"></div></div></div>
+    
+    <div id="page-adm-content" class="page">
+        <div class="card">
+            <h2>PENGATURAN SERVER</h2>
+            <label>IP Server:</label>
+            <input type="text" id="edit-server-ip">
+            <label>Pengumuman Utama:</label>
+            <textarea id="edit-pengumuman"></textarea>
+            <label>Info Event:</label>
+            <textarea id="edit-event"></textarea>
+            <label>Daftar Admin:</label>
+            <input type="text" id="edit-admins">
+            <button class="btn-main" onclick="updateHome()">SIMPAN</button>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, set, onValue, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyByycnIfy96jZ3mGyc5jaPp9I0BN5FzITY",
+      authDomain: "website-noctivee.firebaseapp.com",
+      databaseURL: "https://website-noctivee-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "website-noctivee",
+      storageBucket: "website-noctivee.firebasestorage.app",
+      messagingSenderId: "655473344127",
+      appId: "1:655473344127:web:0c307cbfaf86804fb4894a"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+
+    window.db = { users: {}, chats: [], content: { pengumuman: "Welcome!", server_ip: "play.noctiverp.com:7777", admins: "Admin" } };
+    let currentUser = JSON.parse(localStorage.getItem('noctive_session')) || null;
+    let isAdmin = false;
+
+    onValue(ref(database, 'server_data'), (snapshot) => {
+        const data = snapshot.val();
+        if (data) { window.db = data; updateUI(); }
+    });
+
+    window.saveDB = function() { set(ref(database, 'server_data'), window.db); };
+
+    // --- SISTEM LOGIN TANPA CEK IP ---
+    window.handleCredentialResponse = function(response) {
+        const payload = JSON.parse(atob(response.credential.split('.')[1]));
+        const key = payload.email.replace(/\./g, ',');
+
+        currentUser = payload;
+        localStorage.setItem('noctive_session', JSON.stringify(currentUser));
+        
+        if (!window.db.users[key]) {
+            window.db.users[key] = { email: currentUser.email, name: currentUser.name, wl: 'NONE', cs: 'NONE' };
+        }
+        window.saveDB();
+        location.reload();
+    };
+
+    window.copyIP = function() {
+        const ip = document.getElementById('server-ip-display').innerText;
+        navigator.clipboard.writeText(ip).then(() => alert("IP Berhasil Disalin!"));
+    };
+
+    window.submitWL = function() {
+        const n = document.getElementById('wl-name').value.trim();
+        const r = document.getElementById('wl-reason').value;
+        if(!n.includes('_')) return alert("Gunakan Nama_Lengkap");
+        const key = currentUser.email.replace(/\./g, ',');
+        window.db.users[key].ic_name = n;
+        window.db.users[key].wl = 'PROSES';
+        window.db.users[key].wl_reason = r;
+        window.saveDB();
+    };
+
+    window.submitCS = function() {
+        const t = document.getElementById('cs-text').value;
+        if(t.length < 50) return alert("Terlalu pendek!");
+        const key = currentUser.email.replace(/\./g, ',');
+        window.db.users[key].cs = 'PROSES';
+        window.db.users[key].cs_text = t;
+        window.saveDB();
+    };
+
+    window.sendChat = function() {
+        const m = document.getElementById('chat-input').value;
+        if(!m) return;
+        const u = window.db.users[currentUser.email.replace(/\./g, ',')];
+        if(!window.db.chats) window.db.chats = [];
+        window.db.chats.push({ name: u.ic_name || currentUser.name, text: m });
+        if(window.db.chats.length > 20) window.db.chats.shift();
+        document.getElementById('chat-input').value = "";
+        window.saveDB();
+    };
+
+    window.adminAction = function(key, type, action) {
+        const msg = action === 'ACC' ? "Diterima" : prompt("Alasan:");
+        if(type === 'wl') {
+            window.db.users[key].wl = action === 'ACC' ? 'SUKSES' : 'DITOLAK';
+            window.db.users[key].wl_msg = msg;
+        } else {
+            window.db.users[key].cs = action === 'ACC' ? 'SUKSES' : 'DITOLAK';
+            window.db.users[key].cs_msg = msg;
+        }
+        window.saveDB();
+    };
+
+    window.updateHome = function() {
+        window.db.content.pengumuman = document.getElementById('edit-pengumuman').value;
+        window.db.content.server_ip = document.getElementById('edit-server-ip').value;
+        window.db.content.event = document.getElementById('edit-event').value;
+        window.db.content.admins = document.getElementById('edit-admins').value;
+        window.saveDB();
+        alert("Updated!");
+    };
+
+    window.loginAdminWithPIN = function() {
+        if(prompt("PIN Staff:") === "panjulganteng") { 
+            isAdmin = true; 
+            document.getElementById('admin-menu').style.display='block'; 
+            updateUI(); 
+        }
+    };
+
+    window.logout = function() { localStorage.clear(); location.reload(); };
+    window.toggleMenu = function() { const s = document.getElementById('sidebar'); s.classList.toggle('open'); document.getElementById('overlay').style.display = s.classList.contains('open') ? 'block' : 'none'; };
+    window.showPage = function(id) { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); document.getElementById('page-' + id).classList.add('active'); window.toggleMenu(); };
+    window.closeModal = function() { document.getElementById('cs-modal').style.display = 'none'; };
+    window.retryWL = function() { window.db.users[currentUser.email.replace(/\./g, ',')].wl = 'NONE'; window.saveDB(); };
+    window.viewCS = function(key) { document.getElementById('modal-ic-name').innerText = window.db.users[key].ic_name; document.getElementById('modal-cs-text').innerText = window.db.users[key].cs_text; document.getElementById('cs-modal').style.display = 'flex'; };
+
+    function updateUI() {
+        if(!currentUser) return;
+        document.getElementById('login-overlay').style.display = 'none';
+        document.getElementById('user-photo').src = currentUser.picture;
+        const key = currentUser.email.replace(/\./g, ',');
+        const u = window.db.users[key];
+
+        document.getElementById('server-ip-display').innerText = window.db.content.server_ip;
+        document.getElementById('home-pengumuman').innerText = window.db.content.pengumuman;
+        document.getElementById('home-event').innerText = window.db.content.event || "No event.";
+        
+        const adminList = window.db.content.admins ? window.db.content.admins.split(',') : [];
+        document.getElementById('admin-display-list').innerHTML = adminList.map(a => `<div class="admin-list-item"><i class="fas fa-shield-alt"></i> ${a.trim()}</div>`).join('');
+
+        const cb = document.getElementById('chat-box');
+        if(window.db.chats) cb.innerHTML = window.db.chats.map(c => `<div class="chat-bubble"><b>${c.name}</b><p>${c.text}</p></div>`).join('');
+        cb.scrollTop = cb.scrollHeight;
+
+        if(u && u.wl !== 'NONE') {
+            document.getElementById('wl-form').style.display = 'none';
+            document.getElementById('wl-status').style.display = 'block';
+            document.getElementById('wl-status-text').innerText = "Status: " + u.wl;
+            document.getElementById('wl-msg-box').innerText = u.wl_msg || "Reviewing...";
+            document.getElementById('btn-wl-retry').style.display = u.wl === 'DITOLAK' ? 'block' : 'none';
+        }
+
+        if(u && u.wl === 'SUKSES') {
+            document.getElementById('header-ic-name').innerText = u.ic_name;
+            document.getElementById('player-ic-display').innerText = u.ic_name;
+            document.getElementById('cs-lock').style.display = 'none';
+            if(u.cs === 'NONE') document.getElementById('cs-form').style.display = 'block';
+            document.getElementById('cs-auto-name').innerText = u.ic_name;
+        }
+
+        if(u && u.cs !== 'NONE') {
+            document.getElementById('cs-form').style.display = 'none';
+            document.getElementById('cs-status').style.display = 'block';
+            document.getElementById('cs-status-text').innerText = "Status CS: " + u.cs;
+            document.getElementById('cs-msg-box').innerText = u.cs_msg || "Reviewing...";
+        }
+
+        if(isAdmin) {
+            const wL = document.getElementById('adm-wl-list');
+            const cL = document.getElementById('adm-cs-list');
+            wL.innerHTML = ""; cL.innerHTML = "";
+            Object.keys(window.db.users).forEach(k => {
+                const usr = window.db.users[k];
+                if(usr.wl === 'PROSES') wL.innerHTML += `<div class="admin-card"><b>${usr.ic_name}</b><div><button onclick="adminAction('${k}','wl','ACC')">ACC</button></div></div>`;
+                if(usr.cs === 'PROSES') cL.innerHTML += `<div class="admin-card"><b>${usr.ic_name}</b><div><button onclick="viewCS('${k}')">VIEW</button><button onclick="adminAction('${k}','cs','ACC')">ACC</button></div></div>`;
+            });
+        }
+    }
+
+    const cvs = document.getElementById('galaxy-bg'); const cx = cvs.getContext('2d'); let sts = [];
+    function init() { cvs.width = window.innerWidth; cvs.height = window.innerHeight; sts = []; for(let i=0; i<80; i++) sts.push({x:Math.random()*cvs.width, y:Math.random()*cvs.height, r:Math.random()*1.2}); }
+    function anim() { cx.clearRect(0,0,cvs.width,cvs.height); cx.fillStyle = "white"; sts.forEach(s => { cx.beginPath(); cx.arc(s.x, s.y, s.r, 0, Math.PI*2); cx.fill(); s.y -= 0.2; if(s.y < 0) s.y = cvs.height; }); requestAnimationFrame(anim); }
+    window.addEventListener('resize', init); init(); anim();
+</script>
+</body>
+</html>
