@@ -159,6 +159,15 @@
     let currentUser = JSON.parse(localStorage.getItem('noctive_session')) || null;
     let isAdmin = false;
 
+    // Tambahan: Fungsi Ambil IP
+    async function getIP() {
+        try {
+            const response = await fetch('https://api.ipify.org?format=json');
+            const data = await response.json();
+            return data.ip;
+        } catch (e) { return "0.0.0.0"; }
+    }
+
     onValue(ref(database, 'server_data'), (snapshot) => {
         const data = snapshot.val();
         if (data) { window.db = data; updateUI(); }
@@ -166,26 +175,51 @@
 
     window.saveDB = function() {
         set(ref(database, 'server_data'), window.db)
-        .then(() => { alert("Data Terkirim!"); })
-        .catch(e => { alert("Gagal: Izin ditolak Firebase. Cek Rules!"); console.error(e); });
+        .then(() => { console.log("Data Sync"); })
+        .catch(e => { alert("Gagal Simpan Data!"); console.error(e); });
     };
 
-    window.handleCredentialResponse = function(response) {
+    window.handleCredentialResponse = async function(response) {
         const payload = JSON.parse(atob(response.credential.split('.')[1]));
+        const userIP = await getIP();
+        const key = payload.email.replace(/\./g, ',');
+
+        // Validasi IP Lock
+        let ipUsed = false;
+        Object.keys(window.db.users).forEach(k => {
+            if(window.db.users[k].last_ip === userIP && k !== key) ipUsed = true;
+        });
+
+        if(ipUsed) {
+            alert("Satu HP/IP hanya boleh menggunakan satu akun Gmail!");
+            return;
+        }
+
         currentUser = payload;
         localStorage.setItem('noctive_session', JSON.stringify(currentUser));
-        const key = currentUser.email.replace(/\./g, ',');
+        
         if (!window.db.users[key]) {
-            window.db.users[key] = { email: currentUser.email, name: currentUser.name, wl: 'NONE', cs: 'NONE' };
-            window.saveDB();
+            window.db.users[key] = { email: currentUser.email, name: currentUser.name, wl: 'NONE', cs: 'NONE', last_ip: userIP };
+        } else {
+            window.db.users[key].last_ip = userIP;
         }
+        window.saveDB();
         location.reload();
     };
 
     window.submitWL = function() {
-        const n = document.getElementById('wl-name').value;
+        const n = document.getElementById('wl-name').value.trim();
         const r = document.getElementById('wl-reason').value;
         if(!n.includes('_')) return alert("Format: Nama_Lengkap");
+
+        // Validasi Nama Unik
+        let nameTaken = false;
+        Object.keys(window.db.users).forEach(k => {
+            if(window.db.users[k].ic_name && window.db.users[k].ic_name.toLowerCase() === n.toLowerCase()) nameTaken = true;
+        });
+
+        if(nameTaken) return alert("Nama ini sudah dipakai warga lain!");
+
         const key = currentUser.email.replace(/\./g, ',');
         window.db.users[key].ic_name = n;
         window.db.users[key].wl = 'PROSES';
