@@ -9,46 +9,30 @@
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
         :root {
-            --primary: #0056b3; --primary-dark: #003d80; --primary-soft: #e7f1ff;
-            --accent: #ffcc00; --accent-dark: #e6b800;
-            --bg: transparent; 
-            --card-bg: rgba(255, 255, 255, 0.95); 
-            --text-dark: #2d3436; --text-gray: #636e72;
-            --success: #2ecc71; --danger: #e74c3c;
-            --radius: 12px; --shadow: 0 4px 20px rgba(0,0,0,0.3);
+            --primary: #0056b3; --accent: #ffcc00; --danger: #e74c3c;
+            --card-bg: rgba(255, 255, 255, 0.95); --radius: 12px;
         }
-
         #galaxy-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: radial-gradient(circle at bottom, #001d3d 0%, #000814 100%); }
-        body { margin: 0; padding: 0; font-family: 'Poppins', sans-serif; color: var(--text-dark); overflow-x: hidden; min-height: 100vh; }
-        
-        header { background: rgba(0, 86, 179, 0.9); backdrop-filter: blur(5px); padding: 10px 20px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 15px rgba(0,0,0,0.5); }
-        .ic-display-header { color: var(--accent); font-weight: bold; font-size: 14px; font-family: 'Montserrat'; margin-right: 10px; }
-        .user-profile img { width: 35px; height: 35px; border-radius: 50%; border: 2px solid var(--accent); }
-        .logo-text { font-family: 'Montserrat'; font-size: 18px; color: var(--accent); font-weight: bold; }
+        body { margin: 0; padding: 0; font-family: 'Poppins', sans-serif; color: #2d3436; overflow-x: hidden; min-height: 100vh; }
+        header { background: rgba(0, 86, 179, 0.9); padding: 10px 20px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 15px rgba(0,0,0,0.5); }
+        .logo-text { font-family: 'Montserrat'; color: var(--accent); font-weight: bold; font-size: 18px; }
         .menu-btn { cursor: pointer; display: flex; flex-direction: column; gap: 5px; }
-        .menu-btn span { display: block; width: 22px; height: 3px; background: var(--accent); border-radius: 5px; }
-
+        .menu-btn span { display: block; width: 22px; height: 3px; background: var(--accent); }
+        .user-profile img { width: 35px; height: 35px; border-radius: 50%; border: 2px solid var(--accent); }
         nav { position: fixed; top: 0; left: -280px; width: 260px; height: 100%; background: white; transition: 0.4s; z-index: 2001; box-shadow: 5px 0 25px rgba(0,0,0,0.1); overflow-y: auto; }
         nav.open { left: 0; }
-        .nav-header { padding: 30px 25px; background: var(--accent); color: var(--primary); text-align: center; }
-        nav button { width: 100%; background: transparent; border: none; padding: 15px 25px; text-align: left; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 15px; color: var(--text-dark); border-bottom: 1px solid #f9f9f9; }
-
+        .nav-header { padding: 30px; background: var(--accent); color: var(--primary); text-align: center; }
+        nav button { width: 100%; background: transparent; border: none; padding: 15px 25px; text-align: left; cursor: pointer; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; gap: 10px; }
         .container { width: 100%; max-width: 800px; margin: 20px auto; padding: 0 15px; box-sizing: border-box; }
         .page { display: none; }
-        .page.active { display: block; animation: fadeIn 0.4s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        
-        .card { background: var(--card-bg); border-radius: var(--radius); padding: 25px; box-shadow: var(--shadow); margin-bottom: 20px; border-top: 4px solid var(--accent); }
+        .page.active { display: block; }
+        .card { background: var(--card-bg); border-radius: var(--radius); padding: 25px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); margin-bottom: 20px; border-top: 4px solid var(--accent); }
         .btn-main { width: 100%; padding: 12px; background: var(--accent); border: none; border-radius: 8px; color: var(--primary); font-weight: bold; cursor: pointer; }
         textarea, input { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; margin-bottom: 10px; box-sizing: border-box; font-family: inherit; }
-        
         .chat-container { height: 250px; overflow-y: auto; background: #f8f9fa; border-radius: 8px; padding: 10px; border: 1px solid #ddd; margin-bottom: 10px; display: flex; flex-direction: column; gap: 8px; }
-        .chat-bubble { background: white; padding: 8px 12px; border-radius: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); max-width: 85%; align-self: flex-start; }
-        .chat-bubble b { color: var(--primary); font-size: 12px; display: block; }
-
-        .admin-card { background: #fff; padding: 15px; border-radius: 10px; margin-bottom: 10px; border-left: 5px solid var(--primary); display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .chat-bubble { background: white; padding: 8px 12px; border-radius: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); max-width: 85%; }
+        .admin-card { background: #fff; padding: 15px; border-radius: 10px; margin-bottom: 10px; border-left: 5px solid var(--primary); display: flex; justify-content: space-between; align-items: center; }
         .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; }
-        
         #cs-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 3000; align-items: center; justify-content: center; padding: 20px; }
         .modal-content { background: white; padding: 25px; border-radius: 12px; width: 100%; max-width: 600px; max-height: 80vh; overflow-y: auto; }
     </style>
@@ -57,7 +41,7 @@
 
 <canvas id="galaxy-bg"></canvas>
 
-<div id="login-overlay" style="position:fixed; top:0; left:0; width:100%; height:100%; background:#000814; z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align: center;">
+<div id="login-overlay" style="position:fixed; top:0; left:0; width:100%; height:100%; background:#000814; z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center;">
     <h1 style="color:var(--accent); font-family:Montserrat;">NOCTIVE RP</h1>
     <div id="g_id_onload" data-client_id="94819907264-i5n030757j60pmjqg9ogk50f41pbokqe.apps.googleusercontent.com" data-callback="handleCredentialResponse"></div>
     <div class="g_id_signin" data-type="standard"></div>
@@ -65,9 +49,9 @@
 
 <header>
     <div class="menu-btn" onclick="toggleMenu()"><span></span><span></span><span></span></div>
-    <div class="logo-text">NOCTIVE RP</div>
+    <div class="logo-text">NOCTIVE ROLEPLAY</div>
     <div style="display:flex; align-items:center;">
-        <span id="header-ic-name" class="ic-display-header"></span>
+        <span id="header-ic-name" style="color:var(--accent); font-weight:bold; margin-right:10px;"></span>
         <div class="user-profile"><img id="user-photo" src="" alt=""></div>
     </div>
 </header>
@@ -75,19 +59,18 @@
 <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
 
 <nav id="sidebar">
-    <div class="nav-header"><h2>NOCTIVE RP</h2><p id="player-ic-display">Citizen</p></div>
+    <div class="nav-header"><h3>NOCTIVE RP</h3><p id="player-ic-display">Citizen</p></div>
     <button onclick="showPage('home')"><i class="fas fa-home"></i> HOME</button>
     <button onclick="showPage('wl-page')" id="nav-wl-btn"><i class="fas fa-id-card"></i> WHITELIST</button>
     <button onclick="showPage('cs-page')"><i class="fas fa-book"></i> CHAR STORY</button>
     <button onclick="showPage('donate-page')"><i class="fas fa-hand-holding-usd"></i> DONATE</button>
-    
     <div id="admin-menu" style="display:none;">
         <div style="padding:10px; font-size:11px; background:#eee; font-weight:bold;">STAFF AREA</div>
         <button onclick="showPage('adm-wl')">Manage WL</button>
         <button onclick="showPage('adm-cs')">Manage CS</button>
         <button onclick="showPage('adm-content')">Update Konten</button>
     </div>
-    <button onclick="loginAdminWithPIN()" style="color:var(--danger);"><i class="fas fa-user-shield"></i> STAFF LOGIN</button>
+    <button onclick="loginAdminWithPIN()" style="color:red;"><i class="fas fa-user-shield"></i> STAFF LOGIN</button>
     <button onclick="logout()"><i class="fas fa-sign-out-alt"></i> KELUAR</button>
 </nav>
 
@@ -101,10 +84,7 @@
 
 <div class="container">
     <div id="page-home" class="page active">
-        <div class="card">
-            <h3>PENGUMUMAN</h3>
-            <p id="home-pengumuman"></p>
-        </div>
+        <div class="card"><h3>PENGUMUMAN</h3><p id="home-pengumuman"></p></div>
         <div class="card">
             <h3>CHAT WARGA</h3>
             <div class="chat-container" id="chat-box"></div>
@@ -125,7 +105,7 @@
             </div>
             <div id="wl-status" style="display:none; text-align:center;">
                 <h3 id="wl-status-text"></h3>
-                <p id="wl-msg-box" style="background:#f9f9f9; padding:10px; border-radius:5px;"></p>
+                <p id="wl-msg-box" style="background:#f0f0f0; padding:10px; border-radius:5px;"></p>
                 <button id="btn-wl-retry" class="btn-main" onclick="retryWL()" style="display:none; background:red; color:white;">ULANGI</button>
             </div>
         </div>
@@ -136,34 +116,26 @@
             <h2>CHARACTER STORY</h2>
             <div id="cs-form" style="display:none;">
                 <p>Karakter: <b id="cs-auto-name"></b></p>
-                <textarea id="cs-text" rows="8" placeholder="Tulis cerita karaktermu..."></textarea>
+                <textarea id="cs-text" rows="8" placeholder="Tulis cerita..."></textarea>
                 <button class="btn-main" onclick="submitCS()">SUBMIT CS</button>
             </div>
             <div id="cs-lock" style="text-align:center;"><h3 style="color:red;">TERKUNCI</h3><p>Selesaikan Whitelist dahulu.</p></div>
             <div id="cs-status" style="display:none; text-align:center;">
-                <h3 id="cs-status-text"></h3>
-                <p id="cs-msg-box"></p>
+                <h3 id="cs-status-text"></h3><p id="cs-msg-box"></p>
             </div>
         </div>
     </div>
 
     <div id="page-donate-page" class="page">
         <div class="card" style="text-align:center;">
-            <h2>DONASI SERVER</h2>
-            <p>DANA/OVO: <b>0838-7094-8217</b></p>
-            <button class="btn-main" onclick="window.open('https://wa.me/6283870948217')">HUBUNGI OWNER</button>
+            <h2>DONATE</h2><p>DANA/OVO: <b>0838-7094-8217</b></p>
+            <button class="btn-main" onclick="window.open('https://wa.me/6283870948217')">KONFIRMASI OWNER</button>
         </div>
     </div>
 
     <div id="page-adm-wl" class="page"><div class="card"><h2>PENDING WL</h2><div id="adm-wl-list"></div></div></div>
     <div id="page-adm-cs" class="page"><div class="card"><h2>PENDING CS</h2><div id="adm-cs-list"></div></div></div>
-    <div id="page-adm-content" class="page">
-        <div class="card">
-            <h2>UPDATE KONTEN</h2>
-            <textarea id="edit-pengumuman" placeholder="Pengumuman Home"></textarea>
-            <button class="btn-main" onclick="updateHome()">SIMPAN</button>
-        </div>
-    </div>
+    <div id="page-adm-content" class="page"><div class="card"><h2>UPDATE HOME</h2><textarea id="edit-pengumuman"></textarea><button class="btn-main" onclick="updateHome()">SIMPAN</button></div></div>
 </div>
 
 <script type="module">
@@ -187,14 +159,15 @@
     let currentUser = JSON.parse(localStorage.getItem('noctive_session')) || null;
     let isAdmin = false;
 
-    // Load Data
     onValue(ref(database, 'server_data'), (snapshot) => {
         const data = snapshot.val();
         if (data) { window.db = data; updateUI(); }
     });
 
     window.saveDB = function() {
-        set(ref(database, 'server_data'), window.db).catch(e => alert("Error: " + e.message));
+        set(ref(database, 'server_data'), window.db)
+        .then(() => { alert("Data Terkirim!"); })
+        .catch(e => { alert("Gagal: Izin ditolak Firebase. Cek Rules!"); console.error(e); });
     };
 
     window.handleCredentialResponse = function(response) {
@@ -255,7 +228,6 @@
     window.updateHome = function() {
         window.db.content.pengumuman = document.getElementById('edit-pengumuman').value;
         window.saveDB();
-        alert("Berhasil Update!");
     };
 
     window.loginAdminWithPIN = function() {
@@ -281,15 +253,15 @@
         if(window.db.chats) cb.innerHTML = window.db.chats.map(c => `<div class="chat-bubble"><b>${c.name}</b><p>${c.text}</p></div>`).join('');
         cb.scrollTop = cb.scrollHeight;
 
-        if(u.wl !== 'NONE') {
+        if(u && u.wl !== 'NONE') {
             document.getElementById('wl-form').style.display = 'none';
             document.getElementById('wl-status').style.display = 'block';
-            document.getElementById('wl-status-text').innerText = "WL: " + u.wl;
+            document.getElementById('wl-status-text').innerText = "Status: " + u.wl;
             document.getElementById('wl-msg-box').innerText = u.wl_msg || "Menunggu Staff...";
             document.getElementById('btn-wl-retry').style.display = u.wl === 'DITOLAK' ? 'block' : 'none';
         }
 
-        if(u.wl === 'SUKSES') {
+        if(u && u.wl === 'SUKSES') {
             document.getElementById('header-ic-name').innerText = u.ic_name;
             document.getElementById('player-ic-display').innerText = u.ic_name;
             document.getElementById('cs-lock').style.display = 'none';
@@ -297,10 +269,10 @@
             document.getElementById('cs-auto-name').innerText = u.ic_name;
         }
 
-        if(u.cs !== 'NONE') {
+        if(u && u.cs !== 'NONE') {
             document.getElementById('cs-form').style.display = 'none';
             document.getElementById('cs-status').style.display = 'block';
-            document.getElementById('cs-status-text').innerText = "CS: " + u.cs;
+            document.getElementById('cs-status-text').innerText = "CS Status: " + u.cs;
             document.getElementById('cs-msg-box').innerText = u.cs_msg || "Menunggu Staff...";
         }
 
@@ -310,15 +282,15 @@
             wL.innerHTML = ""; cL.innerHTML = "";
             Object.keys(window.db.users).forEach(k => {
                 const usr = window.db.users[k];
-                if(usr.wl === 'PROSES') wL.innerHTML += `<div class="admin-card"><b>${usr.ic_name}</b><div><button onclick="adminAction('${k}','wl','ACC')">ACC</button><button onclick="adminAction('${k}','wl','REJ')">REJ</button></div></div>`;
+                if(usr.wl === 'PROSES') wL.innerHTML += `<div class="admin-card"><b>${usr.ic_name}</b><div><button onclick="adminAction('${k}','wl','ACC')">ACC</button></div></div>`;
                 if(usr.cs === 'PROSES') cL.innerHTML += `<div class="admin-card"><b>${usr.ic_name}</b><div><button onclick="viewCS('${k}')">CEK</button><button onclick="adminAction('${k}','cs','ACC')">ACC</button></div></div>`;
             });
         }
     }
 
-    // Galaxy BG
+    // Animasi Galaxy
     const cvs = document.getElementById('galaxy-bg'); const cx = cvs.getContext('2d'); let sts = [];
-    function init() { cvs.width = window.innerWidth; cvs.height = window.innerHeight; sts = []; for(let i=0; i<100; i++) sts.push({x:Math.random()*cvs.width, y:Math.random()*cvs.height, r:Math.random()*1.5}); }
+    function init() { cvs.width = window.innerWidth; cvs.height = window.innerHeight; sts = []; for(let i=0; i<80; i++) sts.push({x:Math.random()*cvs.width, y:Math.random()*cvs.height, r:Math.random()*1.2}); }
     function anim() { cx.clearRect(0,0,cvs.width,cvs.height); cx.fillStyle = "white"; sts.forEach(s => { cx.beginPath(); cx.arc(s.x, s.y, s.r, 0, Math.PI*2); cx.fill(); s.y -= 0.2; if(s.y < 0) s.y = cvs.height; }); requestAnimationFrame(anim); }
     init(); anim();
 </script>
